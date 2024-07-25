@@ -6,19 +6,21 @@
 		"type": "git",
 		"url": "https://github.com/boneskull/impvol"
 	},
-	"license": "MIT",
+	"license": "Apache-2.0",
 	"author": {
+		"name": "Christopher Hiller",
 		"email": "boneskull@boneskull.com"
 	},
 	"type": "module",
-	"main": "./lib/index.js",
 	"files": [
-		"lib/",
+		"dist/",
+		"src/",
 		"package.json",
 		"LICENSE.md",
 		"README.md"
 	],
 	"scripts": {
+		"build": "tshy",
 		"format": "prettier .",
 		"lint": "eslint . --max-warnings 0",
 		"lint:knip": "knip",
@@ -56,7 +58,7 @@
 		"prettier-plugin-packagejson": "^2.5.1",
 		"prettier-plugin-sh": "^0.14.0",
 		"sentences-per-line": "^0.2.1",
-		"tsup": "^8.2.3",
+		"tshy": "^3.0.2",
 		"typescript": "^5.5.4",
 		"typescript-eslint": "^7.17.0"
 	},

@@ -5,6 +5,5 @@
 	"ignoreDeps": ["codecov/codecov-action"],
 	"internalChecksFilter": "strict",
 	"labels": ["dependencies"],
-	"minimumReleaseAge": "3 days",
-	"postUpdateOptions": ["pnpmDedupe"]
+	"minimumReleaseAge": "3 days"
 }

@@ -1,11 +1,11 @@
 # Development
 
-After [forking the repo from GitHub](https://help.github.com/articles/fork-a-repo) and [installing pnpm](https://pnpm.io/installation):
+After [forking the repo from GitHub](https://help.github.com/articles/fork-a-repo) and [installing npm](https://npm.io/installation):
 
 ```shell
 git clone https://github.com/ < your-name-here > /impvol
 cd impvol
-pnpm install
+npm install
 ```
 
 > This repository includes a list of suggested VS Code extensions.
@@ -16,13 +16,13 @@ pnpm install
 Run [**tsup**](https://tsup.egoist.dev) locally to build source files from `src/` into output files in `lib/`:
 
 ```shell
-pnpm build
+npm run build
 ```
 
 Add `--watch` to run the builder in a watch mode that continuously cleans and recreates `lib/` as you save files:
 
 ```shell
-pnpm build --watch
+npm run build --watch
 ```
 
 ## Formatting
@@ -33,7 +33,7 @@ It should be applied automatically when you save files in VS Code or make a Git 
 To manually reformat all files, you can run:
 
 ```shell
-pnpm format --write
+npm run format --write
 ```
 
 ## Linting
@@ -41,20 +41,20 @@ pnpm format --write
 This package includes several forms of linting to enforce consistent code quality and styling.
 Each should be shown in VS Code, and can be run manually on the command-line:
 
-- `pnpm lint` ([ESLint](https://eslint.org) with [typescript-eslint](https://typescript-eslint.io)): Lints JavaScript and TypeScript source files
-- `pnpm lint:knip` ([knip](https://github.com/webpro/knip)): Detects unused files, dependencies, and code exports
-- `pnpm lint:md` ([Markdownlint](https://github.com/DavidAnson/markdownlint): Checks Markdown source files
-- `pnpm lint:spelling` ([cspell](https://cspell.org)): Spell checks across all source files
+- `npm run lint` ([ESLint](https://eslint.org) with [typescript-eslint](https://typescript-eslint.io)): Lints JavaScript and TypeScript source files
+- `npm run lint:knip` ([knip](https://github.com/webpro/knip)): Detects unused files, dependencies, and code exports
+- `npm run lint:md` ([Markdownlint](https://github.com/DavidAnson/markdownlint): Checks Markdown source files
+- `npm run lint:spelling` ([cspell](https://cspell.org)): Spell checks across all source files
 
 Read the individual documentation for each linter to understand how it can be configured and used best.
 
 For example, ESLint can be run with `--fix` to auto-fix some lint rule complaints:
 
 ```shell
-pnpm run lint --fix
+npm run lint --fix
 ```
 
-Note that you'll likely need to run `pnpm build` before `pnpm lint` so that lint rules which check the file system can pick up on any built files.
+Note that you'll likely need to run `npm run build` before `npm run lint` so that lint rules which check the file system can pick up on any built files.
 
 ## Type Checking
 
@@ -63,11 +63,11 @@ You should be able to see suggestions from [TypeScript](https://typescriptlang.o
 However, it can be useful to run the TypeScript command-line (`tsc`) to type check all files in `src/`:
 
 ```shell
-pnpm tsc
+npm run tsc
 ```
 
 Add `--watch` to keep the type checker running in a watch mode that updates the display as you save files:
 
 ```shell
-pnpm tsc --watch
+npm run tsc --watch
 ```
