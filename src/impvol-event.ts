@@ -1,9 +1,12 @@
-import { type JsonUint8Array, type SnapshotNode } from 'memfs/lib/snapshot';
-import type { MessagePort } from 'worker_threads';
+// eslint-disable-next-line n/no-missing-import
+import {type SnapshotNode} from 'memfs/lib/snapshot/types.js';
+// eslint-disable-next-line n/no-missing-import
+import {type JsonUint8Array} from 'memfs/lib/snapshot/json.js';
+import type {MessagePort} from 'node:worker_threads';
 
 declare const tag: unique symbol;
 
-export type Tagged<K, T> = K & { [tag]: T };
+export type Tagged<K, T> = K & {[tag]: T};
 
 export type ImpVolId = Tagged<string, 'ImpVolId'>;
 

@@ -75,7 +75,7 @@ export default tseslint.config(
 
       '@typescript-eslint/consistent-type-exports': [
         'error',
-        { fixMixedExportsWithInlineTypeSpecifier: true },
+        {fixMixedExportsWithInlineTypeSpecifier: true},
       ],
 
       '@typescript-eslint/switch-exhaustiveness-check': 'error',
@@ -106,7 +106,7 @@ export default tseslint.config(
 
       '@stylistic/padding-line-between-statements': [
         'error',
-        { blankLine: 'always', prev: '*', next: 'export' },
+        {blankLine: 'always', prev: '*', next: 'export'},
       ],
 
       '@stylistic/lines-between-class-members': 'error',
@@ -124,7 +124,7 @@ export default tseslint.config(
     extends: [tseslint.configs.disableTypeChecked],
     files: ['**/*.md/*.ts'],
     rules: {
-      'n/no-missing-import': ['error', { allowModules: ['impvol'] }],
+      'n/no-missing-import': ['error', {allowModules: ['impvol']}],
     },
   },
 );

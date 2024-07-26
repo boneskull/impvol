@@ -4,13 +4,11 @@ name: Prepare
 
 runs:
   steps:
-    - uses: pnpm/action-setup@v2
-      with:
-        version: 9
     - uses: actions/setup-node@v4
       with:
-        cache: pnpm
-        node-version: "20"
-    - run: pnpm install --frozen-lockfile
-      shell: bash
+        node-version: '20'
+    - name: Install dependencies
+      uses: bahmutov/npm-install@2509f13e8485d88340a789a3f7ca11aaac47c9fc # v1.8.36
+      with:
+        install-command: npm ci --foreground-scripts
   using: composite

@@ -3,17 +3,18 @@
 After [forking the repo from GitHub](https://help.github.com/articles/fork-a-repo) and [installing npm](https://npm.io/installation):
 
 ```shell
-git clone https://github.com/ < your-name-here > /impvol
+git clone https://github.com/boneskull/impvol
 cd impvol
 npm install
 ```
 
+> [!TIP]
 > This repository includes a list of suggested VS Code extensions.
 > It's a good idea to use [VS Code](https://code.visualstudio.com) and accept its suggestion to install them, as they'll help with development.
 
 ## Building
 
-Run [**tsup**](https://tsup.egoist.dev) locally to build source files from `src/` into output files in `lib/`:
+Run [**tshy**](https://npm.im/tshy) locally to build source files from `src/` into output files in `lib/`:
 
 ```shell
 npm run build
@@ -22,18 +23,17 @@ npm run build
 Add `--watch` to run the builder in a watch mode that continuously cleans and recreates `lib/` as you save files:
 
 ```shell
-npm run build --watch
+npm run build -- --watch
 ```
 
 ## Formatting
 
-[Prettier](https://prettier.io) is used to format code.
-It should be applied automatically when you save files in VS Code or make a Git commit.
+[Prettier](https://prettier.io) is used to format code. It should be applied automatically when you save files in VS Code or make a Git commit.
 
 To manually reformat all files, you can run:
 
 ```shell
-npm run format --write
+npm run format -- --write
 ```
 
 ## Linting
@@ -51,7 +51,7 @@ Read the individual documentation for each linter to understand how it can be co
 For example, ESLint can be run with `--fix` to auto-fix some lint rule complaints:
 
 ```shell
-npm run lint --fix
+npm run lint -- --fix
 ```
 
 Note that you'll likely need to run `npm run build` before `npm run lint` so that lint rules which check the file system can pick up on any built files.
@@ -71,3 +71,6 @@ Add `--watch` to keep the type checker running in a watch mode that updates the 
 ```shell
 npm run tsc --watch
 ```
+
+> [!CAUTION]
+> Do not attempt to run `tsc` directly; this will place output files in the wrong location and you'll have to clean them up manually!

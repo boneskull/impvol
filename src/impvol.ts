@@ -7,16 +7,16 @@
 
 import Debug from 'debug';
 // eslint-disable-next-line n/no-missing-import
-import { type Link, type Node } from 'memfs/lib/node.js';
+import {type Link, type Node} from 'memfs/lib/node.js';
 // eslint-disable-next-line n/no-missing-import
-import { toJsonSnapshotSync } from 'memfs/lib/snapshot/json.js';
+import {toJsonSnapshotSync} from 'memfs/lib/snapshot/json.js';
 // eslint-disable-next-line n/no-missing-import
-import { Volume, type DirectoryJSON } from 'memfs/lib/volume.js';
-import { once } from 'node:events';
+import {Volume, type DirectoryJSON} from 'memfs/lib/volume.js';
+import {once} from 'node:events';
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
-import { register } from 'node:module';
-import { pathToFileURL } from 'node:url';
-import { MessageChannel, type MessagePort } from 'node:worker_threads';
+import {register} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import {MessageChannel, type MessagePort} from 'node:worker_threads';
 import {
   type ImpVolClearEvent,
   type ImpVolEvent,
@@ -25,7 +25,7 @@ import {
   type ImpVolInitData,
   type ImpVolUpdateEvent,
 } from './impvol-event.js';
-import { RESOLVE_HOOKS_PATH } from './resolve-hooks.js';
+import {RESOLVE_HOOKS_PATH} from './resolve-hooks.js';
 
 type ImpVolQueueItem = {
   event: ImpVolEvent;
@@ -46,7 +46,7 @@ export class ImportableVolume extends Volume {
 
   constructor(
     private readonly port: MessagePort,
-    props: { Node?: Node; Link?: Link; File?: File } = {},
+    props: {Node?: Node; Link?: Link; File?: File} = {},
   ) {
     super(props);
   }
@@ -80,7 +80,7 @@ export class ImportableVolume extends Volume {
    *   easily ignored. Maybe use a `Proxy` or something instead.
    */
   async __update__(): Promise<void> {
-    const json = toJsonSnapshotSync({ fs: this });
+    const json = toJsonSnapshotSync({fs: this});
     const event: ImpVolUpdateEvent = {
       type: 'UPDATE',
       json,
@@ -120,7 +120,7 @@ export class ImportableVolume extends Volume {
     if (!item) {
       return;
     }
-    const { resolve, reject, event } = item;
+    const {resolve, reject, event} = item;
     try {
       this.#pending = true;
       this.port.postMessage(event);
@@ -137,7 +137,7 @@ export class ImportableVolume extends Volume {
 
   #enqueue(event: ImpVolEvent): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      this.#queue.push({ event, resolve, reject });
+      this.#queue.push({event, resolve, reject});
       void this.#dequeue();
     });
   }
@@ -227,7 +227,7 @@ function registerLoaderHook(hooksPath: string): MessagePort {
   if (registerLoaderHook.cache.has(hooksPath)) {
     return registerLoaderHook.cache.get(hooksPath)!;
   }
-  const { port1: port, port2: hookPort } = new MessageChannel();
+  const {port1: port, port2: hookPort} = new MessageChannel();
 
   register<ImpVolInitData>(hooksPath, {
     parentURL,

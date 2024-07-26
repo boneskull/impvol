@@ -10,17 +10,17 @@
 
 import Debug from 'debug';
 // eslint-disable-next-line n/no-missing-import
-import { fromJsonSnapshotSync } from 'memfs/lib/snapshot/json.js';
+import {fromJsonSnapshotSync} from 'memfs/lib/snapshot/json.js';
 // eslint-disable-next-line n/no-missing-import
-import { Volume } from 'memfs/lib/volume.js';
+import {Volume} from 'memfs/lib/volume.js';
 import {
   type InitializeHook,
   type LoadHook,
   type ResolveHook,
 } from 'node:module';
 import path from 'node:path';
-import { inspect } from 'node:util';
-import { type MessagePort } from 'node:worker_threads';
+import {inspect} from 'node:util';
+import {type MessagePort} from 'node:worker_threads';
 import {
   type ImpVolAckEvent,
   type ImpVolEvent,
@@ -55,13 +55,13 @@ function ack(port: MessagePort, event: ImpVolEvent): void {
   port.postMessage(ackEvent);
 }
 
-export const initialize: InitializeHook<ImpVolInitData> = ({ port }) => {
+export const initialize: InitializeHook<ImpVolInitData> = ({port}) => {
   port.on('message', (event: ImpVolEvent) => {
     const start = performance.now();
     const vol = getVolume();
     switch (event.type) {
       case 'UPDATE': {
-        fromJsonSnapshotSync(event.json, { fs: vol });
+        fromJsonSnapshotSync(event.json, {fs: vol});
         updateVolumeMap();
         break;
       }
@@ -124,7 +124,8 @@ export const load: LoadHook = (specifier, context, nextLoad) => {
     return nextLoad(specifier, context);
   }
   if (url.protocol.startsWith(PROTOCOL)) {
-    const { format } = context;
+    const {format} = context;
+
     if (DISALLOWED_FORMATS.has(format)) {
       debug(
         'Warning: %s with unsupported format %s tried to load via VFS',
@@ -134,9 +135,18 @@ export const load: LoadHook = (specifier, context, nextLoad) => {
       return nextLoad(specifier, context);
     }
     const filepath = url.pathname;
+
+    if (!knownPaths.has(filepath)) {
+      debug('Warning: %s not found in VFS', filepath);
+      return nextLoad(specifier, context);
+    }
     return getVolume()
       .promises.readFile(filepath)
       .then((source) => {
+        if (!knownPaths.has(filepath)) {
+          debug('Warning: %s not found in VFS', filepath);
+          return nextLoad(specifier, context);
+        }
         debug(
           'Loaded %s from VFS (%sms)',
           filepath,
