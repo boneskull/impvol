@@ -1,71 +1,100 @@
 {
-	"name": "impvol",
-	"version": "0.0.0",
-	"description": "stuff",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/boneskull/impvol"
-	},
-	"license": "Apache-2.0",
-	"author": {
-		"name": "Christopher Hiller",
-		"email": "boneskull@boneskull.com"
-	},
-	"type": "module",
-	"files": [
-		"dist/",
-		"src/",
-		"package.json",
-		"LICENSE.md",
-		"README.md"
-	],
-	"scripts": {
-		"build": "tshy",
-		"format": "prettier .",
-		"lint": "eslint . --max-warnings 0",
-		"lint:knip": "knip",
-		"lint:md": "markdownlint \"**/*.md\" \".github/**/*.md\" --rules sentences-per-line",
-		"lint:spelling": "cspell \"**\" \".github/**/*\"",
-		"prepare": "husky",
-		"tsc": "tsc"
-	},
-	"lint-staged": {
-		"*": "prettier --ignore-unknown --write"
-	},
-	"devDependencies": {
-		"@eslint-community/eslint-plugin-eslint-comments": "^4.3.0",
-		"@eslint/js": "^9.7.0",
-		"@types/eslint-plugin-markdown": "^2.0.2",
-		"@types/eslint__js": "^8.42.3",
-		"cspell": "^8.12.1",
-		"eslint": "^9.7.0",
-		"eslint-plugin-jsdoc": "^48.8.3",
-		"eslint-plugin-jsonc": "^2.16.0",
-		"eslint-plugin-markdown": "^5.1.0",
-		"eslint-plugin-n": "^17.9.0",
-		"eslint-plugin-package-json": "^0.15.2",
-		"eslint-plugin-perfectionist": "^3.0.0",
-		"eslint-plugin-regexp": "^2.6.0",
-		"eslint-plugin-yml": "^1.14.0",
-		"husky": "^9.1.2",
-		"jsonc-eslint-parser": "^2.4.0",
-		"knip": "^5.27.0",
-		"lint-staged": "^15.2.7",
-		"markdownlint": "^0.34.0",
-		"markdownlint-cli": "^0.41.0",
-		"prettier": "^3.3.3",
-		"prettier-plugin-curly": "^0.2.2",
-		"prettier-plugin-packagejson": "^2.5.1",
-		"prettier-plugin-sh": "^0.14.0",
-		"sentences-per-line": "^0.2.1",
-		"tshy": "^3.0.2",
-		"typescript": "^5.5.4",
-		"typescript-eslint": "^7.17.0"
-	},
-	"engines": {
-		"node": ">=18"
-	},
-	"publishConfig": {
-		"provenance": true
-	}
+  "name": "impvol",
+  "version": "0.0.0",
+  "description": "stuff",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/boneskull/impvol"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Christopher Hiller",
+    "email": "boneskull@boneskull.com"
+  },
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    }
+  },
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/commonjs/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "LICENSE.md",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tshy",
+    "format": "prettier .",
+    "lint": "eslint . --max-warnings 0",
+    "lint:knip": "knip",
+    "lint:md": "markdownlint-cli2 \"**/*.md\" \".github/**/*.md\"",
+    "lint:spelling": "cspell \"**\" \".github/**/*\"",
+    "prepare": "husky",
+    "tsc": "tsc"
+  },
+  "lint-staged": {
+    "*": "prettier --ignore-unknown --write"
+  },
+  "dependencies": {
+    "debug": "^4.3.5"
+  },
+  "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.3.0",
+    "@eslint/js": "^9.7.0",
+    "@stylistic/eslint-plugin": "^2.3.0",
+    "@types/debug": "^4.1.12",
+    "@types/eslint-plugin-markdown": "^2.0.2",
+    "@types/eslint__js": "^8.42.3",
+    "@types/node": "^20.14.12",
+    "cspell": "^8.12.1",
+    "eslint": "^9.7.0",
+    "eslint-plugin-jsdoc": "^48.8.3",
+    "eslint-plugin-jsonc": "^2.16.0",
+    "eslint-plugin-markdown": "^5.1.0",
+    "eslint-plugin-n": "^17.9.0",
+    "eslint-plugin-package-json": "^0.15.2",
+    "eslint-plugin-perfectionist": "^3.0.0",
+    "eslint-plugin-regexp": "^2.6.0",
+    "eslint-plugin-yml": "^1.14.0",
+    "husky": "^9.1.2",
+    "jsonc-eslint-parser": "^2.4.0",
+    "knip": "^5.27.0",
+    "lint-staged": "^15.2.7",
+    "markdownlint-cli2": "^0.13.0",
+    "markdownlint-cli2-formatter-pretty": "^0.0.6",
+    "memfs": "^4.9.4",
+    "prettier": "^3.3.3",
+    "prettier-plugin-curly": "^0.2.2",
+    "prettier-plugin-packagejson": "^2.5.1",
+    "prettier-plugin-sh": "^0.14.0",
+    "sentences-per-line": "^0.2.1",
+    "tshy": "^3.0.2",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^7.17.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "provenance": true
+  },
+  "tshy": {
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.ts"
+    }
+  }
 }

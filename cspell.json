@@ -1,11 +1,19 @@
 {
-	"dictionaries": ["typescript"],
-	"ignorePaths": [
-		".github",
-		"CHANGELOG.md",
-		"lib",
-		"node_modules",
-		"package-lock.json"
-	],
-	"words": ["impvol", "knip", "packagejson", "tseslint", "tshy"]
+  "dictionaries": ["typescript"],
+  "ignorePaths": [
+    ".github",
+    "CHANGELOG.md",
+    "dist",
+    "node_modules",
+    "package-lock.json"
+  ],
+  "words": [
+    "impvol",
+    "knip",
+    "markdownlint",
+    "memfs",
+    "packagejson",
+    "tseslint",
+    "tshy"
+  ]
 }
