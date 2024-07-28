@@ -100,7 +100,6 @@
     "prettier-plugin-organize-imports": "^4.0.0",
     "prettier-plugin-pkg": "^0.18.1",
     "prettier-plugin-sh": "^0.14.0",
-    "sentences-per-line": "^0.2.1",
     "tshy": "^3.0.2",
     "tsx": "^4.16.2",
     "typescript": "^5.5.4",
@@ -110,7 +109,12 @@
     "provenance": true
   },
   "lint-staged": {
-    "*": "prettier --ignore-unknown --write"
+    "*": [
+      "prettier --ignore-unknown --write",
+      "cspell lint"
+    ],
+    "*.md": "markdownlint-cli2",
+    "*.ts": "eslint --fix"
   },
   "tshy": {
     "exports": {

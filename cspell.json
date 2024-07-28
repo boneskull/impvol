@@ -8,6 +8,7 @@
     "package-lock.json"
   ],
   "words": [
+    "filesystems",
     "impvol",
     "knip",
     "markdownlint",
