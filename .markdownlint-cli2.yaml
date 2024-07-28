@@ -19,7 +19,5 @@ ignores:
 outputFormatters:
   - - 'markdownlint-cli2-formatter-pretty'
     - appendLink: true
-customRules:
-  - 'sentences-per-line'
 showFound: true
 noProgress: false
