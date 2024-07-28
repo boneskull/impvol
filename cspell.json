@@ -8,6 +8,7 @@
     "package-lock.json"
   ],
   "words": [
+    "cbor",
     "filesystems",
     "impvol",
     "knip",
