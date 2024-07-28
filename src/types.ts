@@ -2,7 +2,6 @@
 import {type SnapshotNode} from 'memfs/lib/snapshot/types.js';
 // eslint-disable-next-line n/no-missing-import
 import {type JsonUint8Array} from 'memfs/lib/snapshot/json.js';
-import type {MessagePort} from 'node:worker_threads';
 
 declare const tag: unique symbol;
 
@@ -34,5 +33,6 @@ export type ImpVolHookEvent = ImpVolAckEvent;
 export type ImpVolEvent = ImpVolUpdateEvent | ImpVolClearEvent;
 
 export type ImpVolInitData = {
-  port: MessagePort;
+  tmp: string;
+  sab: SharedArrayBuffer;
 };

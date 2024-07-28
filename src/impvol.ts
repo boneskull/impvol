@@ -1,169 +1,69 @@
+/* eslint-disable n/no-unsupported-features/node-builtins */
+/* eslint-disable n/no-missing-import */
 /**
  * Provides the {@link ImportableVolume} class, which synchronizes a virtual
  * filesystem with a worker thread running a custom import hook.
  *
  * @packageDocumentation
  */
-
 import Debug from 'debug';
-// eslint-disable-next-line n/no-missing-import
-import {type Link, type Node} from 'memfs/lib/node.js';
-// eslint-disable-next-line n/no-missing-import
-import {toJsonSnapshotSync} from 'memfs/lib/snapshot/json.js';
-// eslint-disable-next-line n/no-missing-import
-import {Volume, type DirectoryJSON} from 'memfs/lib/volume.js';
-import {once} from 'node:events';
-// eslint-disable-next-line n/no-unsupported-features/node-builtins
-import {register} from 'node:module';
-import {pathToFileURL} from 'node:url';
-import {MessageChannel, type MessagePort} from 'node:worker_threads';
 import {
-  type ImpVolClearEvent,
-  type ImpVolEvent,
-  type ImpVolHookEvent,
-  type ImpVolId,
-  type ImpVolInitData,
-  type ImpVolUpdateEvent,
-} from './impvol-event.js';
-import {RESOLVE_HOOKS_PATH} from './resolve-hooks.js';
+  fromBinarySnapshotSync,
+  toBinarySnapshotSync,
+} from 'memfs/lib/snapshot/binary.js';
+import {Volume, type DirectoryJSON} from 'memfs/lib/volume.js';
+import {mkdtempSync, writeFileSync} from 'node:fs';
+import {register} from 'node:module';
+import path from 'node:path';
+import {tmpdir} from 'os';
+import {DEFAULT_HOOKS_PATH} from './paths-cjs.cjs';
+import {IMPVOL_URL} from './paths.js';
+import {type ImpVolInitData} from './types.js';
 
-type ImpVolQueueItem = {
-  event: ImpVolEvent;
-  resolve: () => void;
-  reject: (err: unknown) => void;
-};
-
-function createId(prefix = 'impvol'): ImpVolId {
-  return `${prefix}-${Math.random().toString(36).slice(7)}` as ImpVolId;
-}
+let impVol: ImportableVolume;
 
 export class ImportableVolume extends Volume {
-  readonly #impVolId = createId();
-
-  readonly #queue: ImpVolQueueItem[] = [];
-
-  #pending: boolean = false;
-
-  constructor(
-    private readonly port: MessagePort,
-    props: {Node?: Node; Link?: Link; File?: File} = {},
-  ) {
-    super(props);
-  }
-
-  public static async registerHook(
-    this: void,
-    volume?: Volume | string,
-    hooksPath: string = RESOLVE_HOOKS_PATH,
-  ): Promise<ImportableVolume> {
-    await Promise.resolve();
-    if (typeof volume === 'string') {
-      hooksPath = volume;
-      volume = undefined;
+  public static registerHook(this: void, volume?: Volume): ImportableVolume {
+    if (impVol) {
+      return impVol;
     }
+    registerLoaderHook();
 
-    const port = registerLoaderHook(hooksPath);
+    impVol = new ImportableVolume();
 
-    const impVol = new ImportableVolume(port);
+    // clone the volume if it is non-empty
     if (volume) {
-      await impVol.__update__();
+      if (Object.keys(volume.toJSON()).length) {
+        debug('Cloning volume');
+        const snapshot = toBinarySnapshotSync({fs: volume});
+        fromBinarySnapshotSync(snapshot, {fs: impVol});
+        impVol.__update__();
+      } else {
+        debug('Refusing to clone empty volume');
+      }
     }
+
     return impVol;
   }
 
   /**
-   * Updates the worker with a snapshot of the current virtual filesystem
-   *
-   * @todo This method should be Private private. But if it was, the prototype
-   *   extension below wouldn't work. But if the prototype extension was stuffed
-   *   into this class proper, then TS would complain in a way which is not so
-   *   easily ignored. Maybe use a `Proxy` or something instead.
+   * @internal
    */
-  async __update__(): Promise<void> {
-    const json = toJsonSnapshotSync({fs: this});
-    const event: ImpVolUpdateEvent = {
-      type: 'UPDATE',
-      json,
-      id: createId('update'),
-      impVolId: this.#impVolId,
-    };
-    await this.#enqueue(event);
+  public __update__() {
+    const snapshot = toBinarySnapshotSync({fs: this});
+    writeFileSync(tmp, snapshot);
+    Atomics.store(uint8, 0, 1);
+    debug('Updated snapshot');
   }
 
-  public override async fromJSON(
-    json: DirectoryJSON,
-    cwd?: string,
-  ): Promise<void> {
+  public override fromJSON(json: DirectoryJSON, cwd?: string): void {
     super.fromJSON(json, cwd);
-    await this.__update__();
+    this.__update__();
   }
 
-  public override async reset(): Promise<void> {
-    const id = createId('clear');
-    const event: ImpVolClearEvent = {
-      type: 'CLEAR',
-      id,
-      impVolId: this.#impVolId,
-    };
-    await this.#enqueue(event);
+  public override reset(): void {
     super.reset();
-  }
-
-  /**
-   * Async queue
-   */
-  async #dequeue(): Promise<void> {
-    if (this.#pending) {
-      return;
-    }
-    const item = this.#queue.shift();
-    if (!item) {
-      return;
-    }
-    const {resolve, reject, event} = item;
-    try {
-      this.#pending = true;
-      this.port.postMessage(event);
-      await this.#waitForAck(event.id);
-      this.#pending = false;
-      resolve();
-    } catch (err) {
-      this.#pending = false;
-      reject(err);
-    } finally {
-      void this.#dequeue();
-    }
-  }
-
-  #enqueue(event: ImpVolEvent): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.#queue.push({event, resolve, reject});
-      void this.#dequeue();
-    });
-  }
-
-  async #waitFor<T extends ImpVolHookEvent>(
-    type: T['type'],
-    id?: ImpVolId,
-  ): Promise<T> {
-    const [message] = (await once(this.port, 'message')) as [ImpVolHookEvent];
-    if (
-      message.type === type &&
-      message.impVolId === this.#impVolId &&
-      (!id || message.id === id)
-    ) {
-      return message as T;
-    }
-    debug('Waiting for event "%s"; received: %O', type, message);
-    return this.#waitFor(type, id);
-  }
-
-  /**
-   * @param id Event ID to wait for
-   * @todo Timeout?
-   */
-  async #waitForAck(id: ImpVolId): Promise<void> {
-    await this.#waitFor('ACK', id);
+    this.__update__();
   }
 }
 // overrides private methods such that meaningful filesystem writes trigger an
@@ -217,33 +117,32 @@ Object.assign(ImportableVolume.prototype, {
   },
 });
 
+let sab: SharedArrayBuffer;
+let tmp: string;
+let uint8: Uint8Array;
+
 /**
  * Registers the loader hook
  *
  * @param hooksPath Absolute path to hooks file
  * @returns A new MessagePort for communication with the hooks worker
  */
-function registerLoaderHook(hooksPath: string): MessagePort {
-  if (registerLoaderHook.cache.has(hooksPath)) {
-    return registerLoaderHook.cache.get(hooksPath)!;
-  }
-  const {port1: port, port2: hookPort} = new MessageChannel();
-
-  register<ImpVolInitData>(hooksPath, {
-    parentURL,
+function registerLoaderHook() {
+  const tmpDir = mkdtempSync(`${tmpdir()}/impvol-`);
+  tmp = path.join(tmpDir, 'impvol.cbor');
+  debug('Created temp file at %s', tmp);
+  sab = new SharedArrayBuffer(1);
+  uint8 = new Uint8Array(sab);
+  Atomics.store(uint8, 0, 0);
+  register<ImpVolInitData>(DEFAULT_HOOKS_PATH, {
+    parentURL: IMPVOL_URL,
     data: {
-      port: hookPort,
+      tmp,
+      sab,
     },
-    transferList: [hookPort],
   });
-
-  registerLoaderHook.cache.set(hooksPath, port);
-
-  return port;
 }
-registerLoaderHook.cache = new Map<string, MessagePort>();
 
 const debug = Debug('impvol');
 
-export const createImportableVolume = ImportableVolume.registerHook;
-const parentURL = pathToFileURL(__filename).href;
+export const impvol = ImportableVolume.registerHook;

@@ -33,6 +33,9 @@ export default tseslint.config(
 
       'n/no-unpublished-import': 'off',
 
+      // seems to be incompatible with tshy
+      'n/no-extraneous-import': 'off',
+
       // I like my template expressions, tyvm
       '@typescript-eslint/restrict-template-expressions': 'off',
 
@@ -125,6 +128,12 @@ export default tseslint.config(
     files: ['**/*.md/*.ts'],
     rules: {
       'n/no-missing-import': ['error', {allowModules: ['impvol']}],
+    },
+  },
+  {
+    files: ['test/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-floating-promises': 'off',
     },
   },
 );

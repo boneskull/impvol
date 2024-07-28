@@ -1,31 +1,22 @@
+/* eslint-disable n/no-missing-import */
 /**
  * Implements custom hooks for importing from virtual file systems
  *
  * @packageDocumentation
- * @todo Probably nix the entire idea of multiple volumes and just use a
- *   singleton. I cannot see how to reconcile multiple volumes within Node.js'
- *   module system short of using import attributes or search params or
- *   something.
  */
-
 import Debug from 'debug';
-// eslint-disable-next-line n/no-missing-import
-import {fromJsonSnapshotSync} from 'memfs/lib/snapshot/json.js';
-// eslint-disable-next-line n/no-missing-import
+import {fromBinarySnapshotSync} from 'memfs/lib/snapshot/binary.js';
 import {Volume} from 'memfs/lib/volume.js';
+import {readFileSync} from 'node:fs';
 import {
   type InitializeHook,
   type LoadHook,
+  type ModuleFormat,
+  type ModuleSource,
   type ResolveHook,
 } from 'node:module';
 import path from 'node:path';
-import {inspect} from 'node:util';
-import {type MessagePort} from 'node:worker_threads';
-import {
-  type ImpVolAckEvent,
-  type ImpVolEvent,
-  type ImpVolInitData,
-} from './impvol-event.js';
+import {type ImpVolInitData} from './types.js';
 
 const debug = Debug('impvol:hooks');
 
@@ -33,68 +24,70 @@ const PROTOCOL = 'impvol';
 
 let vol: Volume | undefined;
 
-const knownPaths: Set<string> = new Set();
-
+/**
+ * Gets or sets & gets the {@link vol} singleton
+ *
+ * @returns The {@link vol} singleton
+ */
 function getVolume(): Volume {
   return vol ?? (vol = new Volume());
 }
 
-function updateVolumeMap() {
-  for (const filepath of Object.keys(getVolume().toJSON())) {
-    knownPaths.add(filepath);
-    knownPaths.add(path.dirname(filepath));
+let tmp: string;
+let buf: Uint8Array;
+
+export const initialize: InitializeHook<ImpVolInitData> = ({
+  tmp: _tmp,
+  sab,
+}) => {
+  tmp = _tmp;
+  buf = new Uint8Array(sab);
+};
+
+/**
+ * @todo Test WASM
+ */
+const DISALLOWED_FORMATS = new Set(['builtin']);
+
+function guessFormat(specifier: string): ModuleFormat | undefined {
+  const ext = path.extname(specifier);
+  switch (ext) {
+    case '.mjs':
+      return 'module';
+    case '.cjs':
+      return 'commonjs';
+    case '.json':
+      return 'json';
+    case '.wasm':
+      return 'wasm';
+    default:
+      return undefined;
   }
 }
 
-function ack(port: MessagePort, event: ImpVolEvent): void {
-  const ackEvent: ImpVolAckEvent = {
-    type: 'ACK',
-    id: event.id,
-    impVolId: event.impVolId,
-  };
-  port.postMessage(ackEvent);
+function shouldReload(): boolean {
+  return Atomics.load(buf, 0) !== 0;
 }
 
-export const initialize: InitializeHook<ImpVolInitData> = ({port}) => {
-  port.on('message', (event: ImpVolEvent) => {
-    const start = performance.now();
-    const vol = getVolume();
-    switch (event.type) {
-      case 'UPDATE': {
-        fromJsonSnapshotSync(event.json, {fs: vol});
-        updateVolumeMap();
-        break;
-      }
-      case 'CLEAR': {
-        knownPaths.clear();
-        vol.reset();
-        break;
-      }
-      default: {
-        throw new TypeError(`Unknown message: ${inspect(event)}`);
-      }
-    }
-
-    ack(port, event);
-
-    debug(
-      'Event %s handled in %sms',
-      event.type,
-      (performance.now() - start).toFixed(2),
-    );
-  });
-};
-
-const DISALLOWED_FORMATS = new Set(['wasm', 'builtin']);
+function reload() {
+  const buffer = readFileSync(tmp);
+  const cbor = new Uint8Array(buffer);
+  const vol = getVolume();
+  vol.reset();
+  // XXX: memfs needs to re-export type CborUint8Array
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  fromBinarySnapshotSync(cbor as any, {fs: vol});
+}
 
 export const resolve: ResolveHook = (specifier, context, nextResolve) => {
   const start = performance.now();
-  if (knownPaths.has(specifier)) {
+  if (shouldReload()) {
+    reload();
+  }
+  if (getVolume().existsSync(specifier)) {
     try {
-      const ext = path.extname(specifier);
-      const format =
-        ext === '.mjs' ? 'module' : ext === '.json' ? 'json' : 'commonjs';
-      const url = new URL(`${PROTOCOL}://${specifier}`).href;
+      const format = guessFormat(specifier);
+      const {href: url} = new URL(`${PROTOCOL}://${specifier}`);
       debug(
         'Resolved specifier: %s ➡️ %s (%sms)',
         specifier,
@@ -116,16 +109,11 @@ export const resolve: ResolveHook = (specifier, context, nextResolve) => {
 
 export const load: LoadHook = (specifier, context, nextLoad) => {
   const start = performance.now();
-  let url: URL;
-  try {
-    url = new URL(specifier);
-  } catch (err) {
-    debug('Error parsing "%s" as URL: %s', specifier, err);
-    return nextLoad(specifier, context);
+  if (shouldReload()) {
+    reload();
   }
-  if (url.protocol.startsWith(PROTOCOL)) {
+  if (specifier.startsWith(`${PROTOCOL}://`)) {
     const {format} = context;
-
     if (DISALLOWED_FORMATS.has(format)) {
       debug(
         'Warning: %s with unsupported format %s tried to load via VFS',
@@ -134,30 +122,27 @@ export const load: LoadHook = (specifier, context, nextLoad) => {
       );
       return nextLoad(specifier, context);
     }
-    const filepath = url.pathname;
 
-    if (!knownPaths.has(filepath)) {
-      debug('Warning: %s not found in VFS', filepath);
-      return nextLoad(specifier, context);
+    let source: ModuleSource;
+    let pathname: string;
+    try {
+      // JIT URL parsing
+      ({pathname} = new URL(specifier));
+      source = getVolume().readFileSync(pathname);
+    } catch (err) {
+      debug(err);
+      throw err;
     }
-    return getVolume()
-      .promises.readFile(filepath)
-      .then((source) => {
-        if (!knownPaths.has(filepath)) {
-          debug('Warning: %s not found in VFS', filepath);
-          return nextLoad(specifier, context);
-        }
-        debug(
-          'Loaded %s from VFS (%sms)',
-          filepath,
-          (performance.now() - start).toFixed(2),
-        );
-        return {
-          format,
-          shortCircuit: true,
-          source,
-        };
-      });
+    debug(
+      'Loaded %s from VFS (%sms)',
+      pathname,
+      (performance.now() - start).toFixed(2),
+    );
+    return {
+      format,
+      shortCircuit: true,
+      source,
+    };
   }
   return nextLoad(specifier, context);
 };

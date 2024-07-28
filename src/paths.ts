@@ -1,7 +1,7 @@
 import {fileURLToPath} from 'url';
 
 export const RESOLVE_HOOKS_PATH = fileURLToPath(
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore for tshy
   new URL('./impvol-hooks.js', import.meta.url),
 );
+
+export const IMPVOL_URL = new URL('./impvol.js', import.meta.url).href;
