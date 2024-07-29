@@ -17,13 +17,17 @@ import {mkdtempSync, writeFileSync} from 'node:fs';
 import {register} from 'node:module';
 import path from 'node:path';
 import {tmpdir} from 'os';
-import {DEFAULT_HOOKS_PATH, IMPVOL_URL} from './paths.js';
+import {HOOKS_PATH, IMPVOL_URL} from './paths.js';
 import {type ImpVolInitData} from './types.js';
 
 const TEMP_FILE = 'impvol.cbor';
 
-let tmpDir: string;
-
+/**
+ * Store of extra junk for the {@link ImportableVolume} class, so that we do not
+ * add properties to the class itself.
+ *
+ * @internal
+ */
 const metadata = new WeakMap<
   ImportableVolume,
   {
@@ -33,9 +37,16 @@ const metadata = new WeakMap<
 >();
 
 /**
+ * Updates the snapshot of the {@link ImportableVolume}.
+ *
+ * It writes to the temp file associated with the `ImportableVolume`, then sets
+ * the dirty bit.
+ *
+ * @param impvol {@link ImportableVolume} to snapshot
+ * @throws {ReferenceError} If metadata is missing
  * @internal
  */
-function update(impvol: ImportableVolume) {
+function update(impvol: ImportableVolume): void {
   const snapshot = toBinarySnapshotSync({fs: impvol});
   const {tmp, uint8} = metadata.get(impvol)!;
   if (!tmp || !uint8) {
@@ -46,35 +57,20 @@ function update(impvol: ImportableVolume) {
   debug('Updated snapshot');
 }
 
-function initTempDir(tempDir?: string): string {
-  let actualTempDir: string;
-  if (!tempDir) {
-    if (!tmpDir) {
-      tmpDir = mkdtempSync(path.join(tmpdir(), 'impvol-'));
-      debug('Created temp directory at %s', tmpDir);
-    }
-    actualTempDir = tmpDir;
-  } else {
-    actualTempDir = tempDir;
-  }
-  return actualTempDir;
-}
-
 export class ImportableVolume extends Volume {
-  constructor(
-    tempDir?: string,
-    props?: {Node?: Node; Link?: Link; File?: File},
-  ) {
+  constructor(props?: {Node?: Node; Link?: Link; File?: File}) {
     super(props);
     const sab = new SharedArrayBuffer(1);
     const uint8 = new Uint8Array(sab);
-    const actualTempDir = initTempDir(tempDir);
-    const tmp = path.resolve(actualTempDir, TEMP_FILE);
-    metadata.set(this, {tmp, uint8});
-    debug('Created temp file at %s', tmp);
     Atomics.store(uint8, 0, 0);
 
-    register<ImpVolInitData>(DEFAULT_HOOKS_PATH, {
+    const tempDir = mkdtempSync(path.join(tmpdir(), 'impvol-'));
+    const tmp = path.resolve(tempDir, TEMP_FILE);
+    metadata.set(this, {tmp, uint8});
+
+    debug('Instantiated ImportableVolume with temp file: %s', tmp);
+
+    register<ImpVolInitData>(HOOKS_PATH, {
       parentURL: IMPVOL_URL,
       data: {
         tmp,
@@ -83,28 +79,23 @@ export class ImportableVolume extends Volume {
     });
   }
 
-  public static create(
-    this: void,
-    volume?: Volume,
-    tempDir?: string,
-  ): ImportableVolume;
+  public static create(this: void, volume?: Volume): ImportableVolume;
   public static create(
     this: void,
     json?: DirectoryJSON,
-    tempDir?: string,
+    cwd?: string,
   ): ImportableVolume;
 
   public static create(
     this: void,
     volumeOrJson?: Volume | DirectoryJSON,
-    tempDir?: string,
+    cwd = '/',
   ): ImportableVolume {
-    const impVol = new ImportableVolume(tempDir);
+    const impVol = new ImportableVolume();
 
     // clone the volume if it is non-empty
     if (volumeOrJson instanceof Volume) {
       if (Object.keys(volumeOrJson.toJSON()).length) {
-        debug('Cloning volume');
         const snapshot = toBinarySnapshotSync({fs: volumeOrJson});
         fromBinarySnapshotSync(snapshot, {fs: impVol});
         update(impVol);
@@ -112,7 +103,7 @@ export class ImportableVolume extends Volume {
         debug('Refusing to clone empty volume');
       }
     } else if (volumeOrJson) {
-      impVol.fromJSON(volumeOrJson);
+      impVol.fromJSON(volumeOrJson, cwd);
     }
 
     return impVol;

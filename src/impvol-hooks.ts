@@ -16,6 +16,7 @@ import {
   type ResolveHook,
 } from 'node:module';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {type ImpVolInitData} from './types.js';
 
 const debug = Debug('impvol:hooks');
@@ -34,14 +35,14 @@ function getVolume(): Volume {
 }
 
 let tmp: string;
-let buf: Uint8Array;
+let uint8: Uint8Array;
 
 export const initialize: InitializeHook<ImpVolInitData> = ({
   tmp: _tmp,
   sab,
 }) => {
   tmp = _tmp;
-  buf = new Uint8Array(sab);
+  uint8 = new Uint8Array(sab);
 };
 
 /**
@@ -66,7 +67,7 @@ function guessFormat(specifier: string): ModuleFormat | undefined {
 }
 
 function shouldReload(): boolean {
-  return Atomics.load(buf, 0) !== 0;
+  return Atomics.load(uint8, 0) !== 0;
 }
 
 function reload() {
@@ -77,6 +78,8 @@ function reload() {
   // XXX: memfs needs to re-export type CborUint8Array
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   fromBinarySnapshotSync(cbor as any, {fs: vol});
+  Atomics.store(uint8, 0, 0);
+  debug('Reloaded snapshot from %s', tmp);
 }
 
 export const resolve: ResolveHook = (specifier, context, nextResolve) => {
@@ -84,10 +87,24 @@ export const resolve: ResolveHook = (specifier, context, nextResolve) => {
   if (shouldReload()) {
     reload();
   }
-  if (getVolume().existsSync(specifier)) {
+
+  if (specifier.startsWith(`${PROTOCOL}://`)) {
+    const format = guessFormat(new URL(specifier).pathname);
+    return {
+      format,
+      shortCircuit: true,
+      url: specifier,
+    };
+  }
+
+  const filepath = specifier.startsWith('file://')
+    ? fileURLToPath(specifier)
+    : specifier;
+
+  if (getVolume().existsSync(filepath)) {
     try {
-      const format = guessFormat(specifier);
-      const {href: url} = new URL(`${PROTOCOL}://${specifier}`);
+      const format = guessFormat(filepath);
+      const {href: url} = new URL(`${PROTOCOL}://${filepath}`);
       debug(
         'Resolved specifier: %s ➡️ %s (%sms)',
         specifier,
@@ -127,7 +144,8 @@ export const load: LoadHook = (specifier, context, nextLoad) => {
     let pathname: string;
     try {
       // JIT URL parsing
-      ({pathname} = new URL(specifier));
+      const url = new URL(specifier);
+      ({pathname} = url);
       source = getVolume().readFileSync(pathname);
     } catch (err) {
       debug(err);

@@ -7,9 +7,7 @@ import {Volume} from 'memfs/lib/volume.js';
 const TEST_DIR = '/__impvol__';
 
 describe('impvol', () => {
-  describe('ImportableVolume', () => {});
-
-  describe('createImportableVolume()', () => {
+  describe('impvol()', () => {
     it('should return a ImportableVolume instance', () => {
       const vol = impvol();
       assert.ok(vol instanceof ImportableVolume);
@@ -19,8 +17,7 @@ describe('impvol', () => {
     it('should import a script', async () => {
       const content = 'module.exports = "Hello, world!";';
 
-      const vol = impvol();
-      vol.fromJSON(
+      impvol(
         {
           'test.cjs': content,
         },
@@ -46,6 +43,23 @@ describe('impvol', () => {
       );
 
       const result = (await import(`${TEST_DIR}/test.mjs`)) as {
+        default: string;
+      };
+
+      assert.strictEqual(result.default, 'Hello, world!');
+    });
+
+    it('should import a module using the custom protocol', async () => {
+      const content = 'export default "Hello, world!";';
+
+      impvol(
+        {
+          'test.mjs': content,
+        },
+        TEST_DIR,
+      );
+
+      const result = (await import(`impvol://${TEST_DIR}/test.mjs`)) as {
         default: string;
       };
 

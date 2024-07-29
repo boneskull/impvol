@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {fileURLToPath} from 'url';
 
-export const DEFAULT_HOOKS_PATH = fileURLToPath(
+export const HOOKS_PATH = fileURLToPath(
   // @ts-ignore
   new URL('./impvol-hooks.js', import.meta.url),
 );
