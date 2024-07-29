@@ -8,7 +8,7 @@ runs:
       with:
         node-version: '20'
     - name: Install dependencies
-      uses: bahmutov/npm-install@2509f13e8485d88340a789a3f7ca11aaac47c9fc # v1.8.36
+      uses: bahmutov/npm-install@e5c7e14408aa6089501de32bd16123b41738047e # v1.10.2
       with:
         install-command: npm ci --foreground-scripts
   using: composite
