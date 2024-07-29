@@ -10,7 +10,7 @@ jobs:
           fetch-depth: 0
           ref: main
       - uses: ./.github/actions/prepare
-      - run: npm build
+      - run: npm run build
       - env:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -18,10 +18,7 @@ jobs:
 
 name: Release
 
-on:
-  push:
-    branches:
-      - main
+on: workflow_dispatch
 
 permissions:
   contents: write
