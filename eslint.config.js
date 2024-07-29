@@ -1,5 +1,5 @@
-import stylistic from '@stylistic/eslint-plugin';
 import eslint from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import n from 'eslint-plugin-n';
 import tseslint from 'typescript-eslint';
 
@@ -36,7 +36,7 @@ export default tseslint.config(
       // seems to be incompatible with tshy
       'n/no-extraneous-import': 'off',
 
-      // I like my template expressions, tyvm
+      // I like my template expressions
       '@typescript-eslint/restrict-template-expressions': 'off',
 
       // and sometimes you gotta use any
