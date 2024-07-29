@@ -105,7 +105,7 @@
   "lint-staged": {
     "*": [
       "prettier --ignore-unknown --write",
-      "cspell lint"
+      "cspell lint --no-must-find-files"
     ],
     "*.md": "markdownlint-cli2",
     "*.ts": "eslint --fix"
