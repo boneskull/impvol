@@ -5,7 +5,8 @@
     "CHANGELOG.md",
     "dist",
     "node_modules",
-    "package-lock.json"
+    "package-lock.json",
+    ".release-it.json"
   ],
   "words": [
     "boneskull",
