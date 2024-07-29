@@ -17,8 +17,7 @@ import {mkdtempSync, writeFileSync} from 'node:fs';
 import {register} from 'node:module';
 import path from 'node:path';
 import {tmpdir} from 'os';
-import {DEFAULT_HOOKS_PATH} from './paths-cjs.cjs';
-import {IMPVOL_URL} from './paths.js';
+import {DEFAULT_HOOKS_PATH, IMPVOL_URL} from './paths.js';
 import {type ImpVolInitData} from './types.js';
 
 const TEMP_FILE = 'impvol.cbor';
