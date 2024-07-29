@@ -30,11 +30,13 @@ Once an `ImportableVolume` has been created, any specifier in the virtual filesy
 
 **Note:** `impvol` _only_ works with `import()`. It does not work with `require()`.
 
-> [!CAUTION] Terrible things, in descending order of terribleness:
+> [!CAUTION]
 >
-> - This lib overrides `memfs` internals. This lib is evil and I am bad.
-> - `impvol` leaks memory. It is intended for use in _tests_, not production systems. Though, if you _do_ use it in production, please drop me a line so I can have a good laugh.
-> - TS will not love importing from these magical imaginary files. Can probably be mitigated with ambient module declarations.
+> This lib is horrible. In descending order of horror:
+>
+> - This lib overrides `memfs` internals. This is a bad idea. I am bad.
+> - `impvol` **leaks memory**. It is intended for use in _tests_, not production systems. However, if you _do_ use it in production, please drop me a line so I can have a good laugh.
+> - TS will not love importing from these magical imaginary files. This can probably be mitigated with ambient module declarations.
 
 ## Requirements
 
@@ -58,6 +60,10 @@ When an `ImportableVolume`'s filesystem changes, it generates a snapshot of the 
 When the worker thread's resolve hook is hit, the dirty bit is checked. If it's set, the worker overwrites its virtual filesystem with the contents of the snapshot temp file, then finally resets the dirty bit. After the refresh, the resolve hook checks if the requested specifier matches a file in its filesystem.
 
 If there's a match, the resolve hook short-circuits with a URL using a custom protocol -- which is subsequently handled by the loader hook. The loader hook reads the file from the worker thread's filesystem if the custom protocol is detected.
+
+### Memory Leaks
+
+Repeatedly creating `ImportableVolume` instances will result in memory leaks because the worker threads running customization hooks are never terminated. As far as I can tell, such "module loader" worker threads are unable to be terminated by the parent process.
 
 ## Future
 
