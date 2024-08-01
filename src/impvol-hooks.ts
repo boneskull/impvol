@@ -17,13 +17,14 @@ import {
 } from 'node:module';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+
 import {type ImpVolInitData} from './types.js';
 
 const debug = Debug('impvol:hooks');
 
 const PROTOCOL = 'impvol';
 
-let vol: Volume | undefined;
+let vol: undefined | Volume;
 
 /**
  * Gets or sets & gets the {@link vol} singleton
@@ -38,8 +39,8 @@ let tmp: string;
 let uint8: Uint8Array;
 
 export const initialize: InitializeHook<ImpVolInitData> = ({
-  tmp: _tmp,
   sab,
+  tmp: _tmp,
 }) => {
   tmp = _tmp;
   uint8 = new Uint8Array(sab);
@@ -53,12 +54,12 @@ const DISALLOWED_FORMATS = new Set(['builtin']);
 function guessFormat(specifier: string): ModuleFormat | undefined {
   const ext = path.extname(specifier);
   switch (ext) {
-    case '.mjs':
-      return 'module';
     case '.cjs':
       return 'commonjs';
     case '.json':
       return 'json';
+    case '.mjs':
+      return 'module';
     case '.wasm':
       return 'wasm';
     default:

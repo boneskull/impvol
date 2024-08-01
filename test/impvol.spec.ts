@@ -1,8 +1,9 @@
-import assert from 'node:assert';
-import {describe, it} from 'node:test';
-import {ImportableVolume, impvol} from '../src/impvol.js';
 // eslint-disable-next-line n/no-missing-import
 import {Volume} from 'memfs/lib/volume.js';
+import assert from 'node:assert';
+import {describe, it} from 'node:test';
+
+import {ImportableVolume, impvol} from '../src/impvol.js';
 
 const TEST_DIR = '/__impvol__';
 

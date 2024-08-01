@@ -12,11 +12,12 @@ import {
   fromBinarySnapshotSync,
   toBinarySnapshotSync,
 } from 'memfs/lib/snapshot/binary.js';
-import {Volume, type DirectoryJSON} from 'memfs/lib/volume.js';
+import {type DirectoryJSON, Volume} from 'memfs/lib/volume.js';
 import {mkdtempSync, writeFileSync} from 'node:fs';
 import {register} from 'node:module';
 import path from 'node:path';
 import {tmpdir} from 'os';
+
 import {HOOKS_PATH, IMPVOL_URL} from './paths.js';
 import {type ImpVolInitData} from './types.js';
 
@@ -58,7 +59,7 @@ function update(impvol: ImportableVolume): void {
 }
 
 export class ImportableVolume extends Volume {
-  constructor(props?: {Node?: Node; Link?: Link; File?: File}) {
+  constructor(props?: {File?: File; Link?: Link; Node?: Node}) {
     super(props);
     const sab = new SharedArrayBuffer(1);
     const uint8 = new Uint8Array(sab);
@@ -71,11 +72,11 @@ export class ImportableVolume extends Volume {
     debug('Instantiated ImportableVolume with temp file: %s', tmp);
 
     register<ImpVolInitData>(HOOKS_PATH, {
-      parentURL: IMPVOL_URL,
       data: {
-        tmp,
         sab,
+        tmp,
       },
+      parentURL: IMPVOL_URL,
     });
   }
 
@@ -88,7 +89,7 @@ export class ImportableVolume extends Volume {
 
   public static create(
     this: void,
-    volumeOrJson?: Volume | DirectoryJSON,
+    volumeOrJson?: DirectoryJSON | Volume,
     cwd = '/',
   ): ImportableVolume {
     const impVol = new ImportableVolume();
@@ -127,16 +128,27 @@ export class ImportableVolume extends Volume {
 // TODO: probably need more here, but this is a start. Also: consider doing
 // something else.
 Object.assign(ImportableVolume.prototype, {
-  writeFileBase(this: ImportableVolume, ...args: unknown[]): unknown {
+  linkBase(this: ImportableVolume, ...args: unknown[]): unknown {
     // @ts-expect-error private
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const returnValue = Volume.prototype.writeFileBase.call(
+    const returnValue = Volume.prototype.linkBase.call(
       this,
       ...args,
     ) as unknown;
     update(this);
     return returnValue;
   },
+  symlinkBase(this: ImportableVolume, ...args: unknown[]): unknown {
+    // @ts-expect-error private
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const returnValue = Volume.prototype.symlinkBase.call(
+      this,
+      ...args,
+    ) as unknown;
+    update(this);
+    return returnValue;
+  },
+
   unlinkBase(this: ImportableVolume, ...args: unknown[]): unknown {
     // @ts-expect-error private
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -148,32 +160,21 @@ Object.assign(ImportableVolume.prototype, {
     return returnValue;
   },
 
+  writeFileBase(this: ImportableVolume, ...args: unknown[]): unknown {
+    // @ts-expect-error private
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const returnValue = Volume.prototype.writeFileBase.call(
+      this,
+      ...args,
+    ) as unknown;
+    update(this);
+    return returnValue;
+  },
+
   writevBase(this: ImportableVolume, ...args: unknown[]): unknown {
     // @ts-expect-error private
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     const returnValue = Volume.prototype.writevBase.call(
-      this,
-      ...args,
-    ) as unknown;
-    update(this);
-    return returnValue;
-  },
-
-  linkBase(this: ImportableVolume, ...args: unknown[]): unknown {
-    // @ts-expect-error private
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const returnValue = Volume.prototype.linkBase.call(
-      this,
-      ...args,
-    ) as unknown;
-    update(this);
-    return returnValue;
-  },
-
-  symlinkBase(this: ImportableVolume, ...args: unknown[]): unknown {
-    // @ts-expect-error private
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    const returnValue = Volume.prototype.symlinkBase.call(
       this,
       ...args,
     ) as unknown;
