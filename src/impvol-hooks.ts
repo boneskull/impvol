@@ -63,7 +63,9 @@ function guessFormat(specifier: string): ModuleFormat | undefined {
     case '.wasm':
       return 'wasm';
     default:
-      return undefined;
+      // TODO: I'm not sure how to handle this other than to read a `package.json`.
+      // Is that what should happen?
+      return 'commonjs';
   }
 }
 
