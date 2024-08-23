@@ -101,7 +101,8 @@
     "typescript-eslint": "7.18.0"
   },
   "publishConfig": {
-    "provenance": true
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "lint-staged": {
     "*": [
