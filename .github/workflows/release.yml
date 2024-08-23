@@ -1,25 +1,36 @@
+name: release-please
+
 concurrency:
   group: ${{ github.workflow }}
 
-jobs:
-  release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
-        with:
-          fetch-depth: 0
-          ref: main
-      - uses: ./.github/actions/prepare
-      - run: npm run build
-      - env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        uses: JoshuaKGoldberg/release-it-action@a5e9120c1c7bb2d6a4e9f86b9464cf830e215ae7 # v0.2.3
-
-name: Release
-
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
-  id-token: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Release Please
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: release
+        uses: googleapis/release-please-action@7987652d64b4581673a76e33ad5e98e3dd56832f # v4
+
+      # see https://github.com/google-github-actions/release-please-action#automating-publication-to-npm
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+        if: ${{ steps.release.outputs.release_created }}
+
+      - uses: ./.github/actions/prepare
+        if: ${{ steps.release.outputs.release_created }}
+      - run: npm run build
+        if: ${{ steps.release.outputs.release_created }}
+      - name: Publish to npm
+        if: ${{ steps.release.outputs.release_created }}
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        run: npm publish
