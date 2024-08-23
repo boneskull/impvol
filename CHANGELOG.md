@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.2](https://github.com/boneskull/impvol/compare/impvol-v0.1.1...impvol-v0.1.2) (2024-08-23)
+
+
+### Bug Fixes
+
+* **pkg:** force release ([3f55955](https://github.com/boneskull/impvol/commit/3f559553247ce4a2090a9232b7db339ed98c51a1))
+* **pkg:** force release again ([5f6ef38](https://github.com/boneskull/impvol/commit/5f6ef382faf214ca17667d7adf65dd535d0d4aa9))
+
 ## [0.1.1](https://github.com/boneskull/impvol/compare/impvol-v0.1.0...impvol-v0.1.1) (2024-08-23)
 
 
