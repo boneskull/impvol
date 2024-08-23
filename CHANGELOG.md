@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/boneskull/impvol/compare/impvol-v0.1.4...impvol-v0.1.5) (2024-08-23)
+
+
+### Bug Fixes
+
+* **pkg:** I am going to cry ([d9d1a46](https://github.com/boneskull/impvol/commit/d9d1a4640fd629b73ba754c12cb9ee307493467a))
+
 ## [0.1.4](https://github.com/boneskull/impvol/compare/impvol-v0.1.3...impvol-v0.1.4) (2024-08-23)
 
 
