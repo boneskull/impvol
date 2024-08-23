@@ -32,6 +32,6 @@ jobs:
         if: ${{ steps.release.outputs.release_created }}
       - name: Publish to npm
         if: ${{ steps.release.outputs.release_created }}
+        run: npm publish --provenance --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        run: npm publish
