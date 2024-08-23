@@ -22,15 +22,27 @@ jobs:
         uses: googleapis/release-please-action@7987652d64b4581673a76e33ad5e98e3dd56832f # v4
 
       # see https://github.com/google-github-actions/release-please-action#automating-publication-to-npm
-      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
+      - name: Checkout Repository
         if: ${{ steps.release.outputs.release_created }}
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
-      - uses: ./.github/actions/prepare
+      - name: Setup Node.js
         if: ${{ steps.release.outputs.release_created }}
-      - run: npm run build
+        uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4.0.3
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
         if: ${{ steps.release.outputs.release_created }}
+        uses: bahmutov/npm-install@e5c7e14408aa6089501de32bd16123b41738047e # v1.10.2
+
+      - name: Build
+        if: ${{ steps.release.outputs.release_created }}
+        run: npm run build
+
       - name: Publish to npm
         if: ${{ steps.release.outputs.release_created }}
-        run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        run: npm publish

@@ -7,7 +7,6 @@ runs:
     - uses: actions/setup-node@1e60f620b9541d16bece96c5465dc8ee9832be0b # v4
       with:
         node-version: '20'
-        registry-url: 'https://registry.npmjs.org'
     - name: Install dependencies
       uses: bahmutov/npm-install@e5c7e14408aa6089501de32bd16123b41738047e # v1.10.2
       with:
