@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/boneskull/impvol/compare/impvol-v0.1.5...impvol-v0.1.6) (2024-08-23)
+
+
+### Bug Fixes
+
+* **pkg:** the last failure looked different this time! ([b13c446](https://github.com/boneskull/impvol/commit/b13c44668a929f2dece3ab3f58e87da0e8e7e301))
+
 ## [0.1.5](https://github.com/boneskull/impvol/compare/impvol-v0.1.4...impvol-v0.1.5) (2024-08-23)
 
 
