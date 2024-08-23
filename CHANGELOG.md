@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/boneskull/impvol/compare/impvol-v0.1.2...impvol-v0.1.3) (2024-08-23)
+
+
+### Bug Fixes
+
+* **pkg:** ugh what have I done ([8ebc118](https://github.com/boneskull/impvol/commit/8ebc11801c2a3b56e94640803b06f8544d94fdb9))
+
 ## [0.1.2](https://github.com/boneskull/impvol/compare/impvol-v0.1.1...impvol-v0.1.2) (2024-08-23)
 
 
