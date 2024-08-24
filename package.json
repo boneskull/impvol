@@ -32,6 +32,7 @@
   },
   "types": "./dist/commonjs/index.d.ts",
   "files": [
+    "CHANGELOG.md",
     "LICENSE.md",
     "dist",
     "package.json",
@@ -62,6 +63,7 @@
     "lint:spelling": "cspell \"**\" \".github/**/*\"",
     "lint:staged": "lint-staged",
     "prepare": "husky",
+    "prepublishOnly": "npm run build",
     "test": "node --import tsx ./test/impvol.spec.ts",
     "tsc": "tsc -p tsconfig.tsc.json"
   },
