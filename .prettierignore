@@ -1,3 +1,5 @@
 .husky/
-lib/
-pnpm-lock.yaml
+dist/
+.tshy/
+package-lock.json
+CHANGELOG.md
