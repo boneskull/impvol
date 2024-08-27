@@ -106,6 +106,45 @@
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
+    "rules": {
+      "body-max-line-length": [
+        0
+      ],
+      "footer-max-line-length": [
+        0
+      ],
+      "header-max-length": [
+        0
+      ],
+      "subject-case": [
+        0
+      ],
+      "subject-full-stop": [
+        0
+      ]
+    }
+  },
+  "knip": {
+    "entry": [
+      "src/index.ts",
+      "test/**/*.spec.ts"
+    ],
+    "ignoreDependencies": [
+      "markdownlint-cli2-formatter-pretty"
+    ],
+    "ignoreExportsUsedInFile": {
+      "interface": true,
+      "type": true
+    },
+    "project": [
+      "src/**/*.ts",
+      "test/**/*.ts"
+    ]
+  },
   "lint-staged": {
     "*": [
       "prettier --ignore-unknown --write",
@@ -113,6 +152,63 @@
     ],
     "*.md": "markdownlint-cli2",
     "*.ts": "eslint --fix"
+  },
+  "markdownlint-cli2": {
+    "config": {
+      "ul-style": {
+        "style": "dash"
+      },
+      "ul-indent": {
+        "indent": 2
+      },
+      "commands-show-output": false,
+      "no-bare-urls": false,
+      "line-length": false,
+      "no-emphasis-as-header": false,
+      "no-duplicate-header": false,
+      "header-increment": false,
+      "no-blanks-blockquote": false,
+      "headings": false
+    },
+    "ignores": [
+      "**/node_modules/**",
+      "**/dist/**",
+      ".github/CODE_OF_CONDUCT.md",
+      "**/CHANGELOG.md"
+    ],
+    "outputFormatters": [
+      [
+        "markdownlint-cli2-formatter-pretty",
+        {
+          "appendLink": true
+        }
+      ]
+    ],
+    "showFound": true,
+    "noProgress": false
+  },
+  "prettier": {
+    "overrides": [
+      {
+        "files": ".nvmrc",
+        "options": {
+          "parser": "yaml"
+        }
+      }
+    ],
+    "plugins": [
+      "prettier-plugin-curly",
+      "prettier-plugin-sh",
+      "prettier-plugin-organize-imports",
+      "prettier-plugin-pkg",
+      "prettier-plugin-jsdoc"
+    ],
+    "useTabs": false,
+    "singleQuote": true,
+    "bracketSpacing": false,
+    "endOfLine": "auto",
+    "jsdocCommentLineStrategy": "multiline",
+    "tsdoc": true
   },
   "tshy": {
     "exports": {

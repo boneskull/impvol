@@ -18,6 +18,7 @@
     "markdownlint",
     "memfs",
     "packagejson",
+    "tsdoc",
     "tseslint",
     "tshy"
   ]
