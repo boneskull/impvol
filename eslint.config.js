@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import eslint from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import n from 'eslint-plugin-n';
@@ -14,17 +16,17 @@ export default tseslint.config(
     },
   },
   eslint.configs.recommended,
-  n.configs['flat/recommended'],
   perfectionist.configs['recommended-natural'],
+  n.configs['flat/recommended'],
   ...tseslint.config({
     extends: tseslint.configs.recommendedTypeChecked,
     files: ['**/*.js', '**/*.ts'],
     languageOptions: {
       parserOptions: {
-        EXPERIMENTAL_useProjectService: {
-          allowDefaultProjectForFiles: ['./*.*s', 'eslint.config.js'],
-          defaultProject: './tsconfig.json',
+        projectService: {
+          allowDefaultProject: ['*.js', '.*.js'],
         },
+        tsconfigRootDir: import.meta.dirname,
       },
     },
     plugins: {
@@ -117,21 +119,6 @@ export default tseslint.config(
       'no-use-before-define': 'off',
     },
   }),
-  {
-    files: ['*.jsonc'],
-    rules: {
-      'jsonc/comma-dangle': 'off',
-      'jsonc/no-comments': 'off',
-      'jsonc/sort-keys': 'error',
-    },
-  },
-  {
-    extends: [tseslint.configs.disableTypeChecked],
-    files: ['**/*.md/*.ts'],
-    rules: {
-      'n/no-missing-import': ['error', {allowModules: ['impvol']}],
-    },
-  },
   {
     files: ['test/**/*.ts'],
     rules: {
