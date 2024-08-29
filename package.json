@@ -131,6 +131,7 @@
   "knip": {
     "entry": [
       "src/index.ts",
+      "src/impvol-hooks.ts",
       "test/**/*.spec.ts"
     ],
     "ignoreDependencies": [
