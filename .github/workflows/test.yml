@@ -1,9 +1,18 @@
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version: [20, 22]
+        os: [ubuntu-latest, windows-latest]
+    name: Node.js v${{ matrix.node_version }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      DEBUG: 'impvol*'
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4
       - uses: ./.github/actions/prepare
+        with:
+          node-version: ${{ matrix.node_version }}
       - run: npm test
 
 name: Test
