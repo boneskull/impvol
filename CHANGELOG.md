@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7](https://github.com/boneskull/impvol/compare/impvol-v0.1.7...impvol-v0.1.7) (2024-09-04)
+
+
+### Bug Fixes
+
+* windows compat ([2234bca](https://github.com/boneskull/impvol/commit/2234bcab3fdad32fa03228504319e48794c9e7a9))
+
 ## [0.1.7](https://github.com/boneskull/impvol/compare/impvol-v0.1.6...impvol-v0.1.7) (2024-08-23)
 
 
