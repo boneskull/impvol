@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.10](https://github.com/boneskull/impvol/compare/impvol-v0.1.9...impvol-v0.1.10) (2024-09-04)
+
+
+### Bug Fixes
+
+* **ci:** revert changes to publish workflows ([f96e6db](https://github.com/boneskull/impvol/commit/f96e6dbff7d2baf902371ef122e85b6f93e60bf1))
+
 ## [0.1.9](https://github.com/boneskull/impvol/compare/impvol-v0.1.8...impvol-v0.1.9) (2024-09-04)
 
 
