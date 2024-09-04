@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.8](https://github.com/boneskull/impvol/compare/impvol-v0.1.7...impvol-v0.1.8) (2024-09-04)
+
+
+### Bug Fixes
+
+* **pkg:** try to reset release target ([97af324](https://github.com/boneskull/impvol/commit/97af324b82b45cf42c794ae6fdfe1f9718b518ab))
+* windows compat ([2234bca](https://github.com/boneskull/impvol/commit/2234bcab3fdad32fa03228504319e48794c9e7a9))
+
 ## [0.1.7](https://github.com/boneskull/impvol/compare/impvol-v0.1.7...impvol-v0.1.7) (2024-09-04)
 
 
