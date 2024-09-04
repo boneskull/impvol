@@ -64,7 +64,7 @@
     "lint:staged": "lint-staged",
     "prepare": "husky",
     "prepublishOnly": "npm run build",
-    "test": "node --import tsx ./test/impvol.spec.ts",
+    "test": "node --test --import tsx ./test/impvol.spec.ts",
     "tsc": "tsc -p tsconfig.tsc.json"
   },
   "peerDependencies": {
