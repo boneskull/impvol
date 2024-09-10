@@ -3,6 +3,8 @@
 > _Importable Volume_ — a drop-in replacement for `memfs`'s `Volume`
 >
 > Import scripts and modules from [memfs](https://npm.im/memfs)' virtual filesystems.
+>
+> ![impvol logo](https://github.com/boneskull/impvol/raw/main/assets/impvol.png)
 
 ## Usage
 
