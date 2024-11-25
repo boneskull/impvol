@@ -69,10 +69,6 @@ function guessFormat(specifier: string): ModuleFormat | undefined {
   }
 }
 
-function shouldReload(): boolean {
-  return Atomics.load(uint8, 0) !== 0;
-}
-
 function reload() {
   const buffer = readFileSync(tmp);
   const cbor = new Uint8Array(buffer);
@@ -83,6 +79,10 @@ function reload() {
   fromBinarySnapshotSync(cbor as any, {fs: vol});
   Atomics.store(uint8, 0, 0);
   debug('Reloaded snapshot from %s', tmp);
+}
+
+function shouldReload(): boolean {
+  return Atomics.load(uint8, 0) !== 0;
 }
 
 export const resolve: ResolveHook = (specifier, context, nextResolve) => {

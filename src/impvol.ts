@@ -37,27 +37,6 @@ const metadata = new WeakMap<
   }
 >();
 
-/**
- * Updates the snapshot of the {@link ImportableVolume}.
- *
- * It writes to the temp file associated with the `ImportableVolume`, then sets
- * the dirty bit.
- *
- * @param impvol {@link ImportableVolume} to snapshot
- * @throws {ReferenceError} If metadata is missing
- * @internal
- */
-function update(impvol: ImportableVolume): void {
-  const snapshot = toBinarySnapshotSync({fs: impvol});
-  const {tmp, uint8} = metadata.get(impvol)!;
-  if (!tmp || !uint8) {
-    throw new ReferenceError('Missing metadata');
-  }
-  writeFileSync(tmp, snapshot);
-  Atomics.store(uint8, 0, 1);
-  debug('Updated snapshot');
-}
-
 export class ImportableVolume extends Volume {
   constructor(props?: {File?: File; Link?: Link; Node?: Node}) {
     super(props);
@@ -119,6 +98,27 @@ export class ImportableVolume extends Volume {
     super.reset();
     update(this);
   }
+}
+
+/**
+ * Updates the snapshot of the {@link ImportableVolume}.
+ *
+ * It writes to the temp file associated with the `ImportableVolume`, then sets
+ * the dirty bit.
+ *
+ * @param impvol {@link ImportableVolume} to snapshot
+ * @throws {ReferenceError} If metadata is missing
+ * @internal
+ */
+function update(impvol: ImportableVolume): void {
+  const snapshot = toBinarySnapshotSync({fs: impvol});
+  const {tmp, uint8} = metadata.get(impvol)!;
+  if (!tmp || !uint8) {
+    throw new ReferenceError('Missing metadata');
+  }
+  writeFileSync(tmp, snapshot);
+  Atomics.store(uint8, 0, 1);
+  debug('Updated snapshot');
 }
 
 // overrides private methods such that meaningful filesystem writes trigger an
