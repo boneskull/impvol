@@ -1,6 +1,7 @@
 // eslint-disable-next-line n/no-missing-import
 import {Volume} from 'memfs/lib/volume.js';
 import assert from 'node:assert';
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import {describe, it} from 'node:test';
 
 import {ImportableVolume, impvol} from '../src/impvol.js';
