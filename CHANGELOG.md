@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.12](https://github.com/boneskull/impvol/compare/impvol-v0.1.11...impvol-v0.1.12) (2024-11-25)
+
+
+### Bug Fixes
+
+* attempt publishing with provenance again ([3e6164f](https://github.com/boneskull/impvol/commit/3e6164f2230ee09eb36394dd2df985b8b1065821))
+
 ## [0.1.11](https://github.com/boneskull/impvol/compare/impvol-v0.1.10...impvol-v0.1.11) (2024-09-09)
 
 
