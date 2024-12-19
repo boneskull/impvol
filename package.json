@@ -81,7 +81,7 @@
     "@types/debug": "4.1.12",
     "@types/eslint__js": "8.42.3",
     "@types/node": "22.10.2",
-    "cspell": "8.17.0",
+    "cspell": "8.17.1",
     "eslint": "9.17.0",
     "eslint-plugin-n": "17.15.0",
     "eslint-plugin-perfectionist": "4.3.0",
