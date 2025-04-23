@@ -65,7 +65,6 @@ export class ImportableVolume extends Volume {
     json?: DirectoryJSON,
     cwd?: string,
   ): ImportableVolume;
-
   public static create(
     this: void,
     volumeOrJson?: DirectoryJSON | Volume,
