@@ -16,6 +16,7 @@
     "node": ">=20.0.0"
   },
   "main": "./dist/commonjs/index.js",
+  "types": "./dist/commonjs/index.d.ts",
   "module": "./dist/esm/index.js",
   "exports": {
     "./package.json": "./package.json",
@@ -30,7 +31,6 @@
       }
     }
   },
-  "types": "./dist/commonjs/index.d.ts",
   "files": [
     "CHANGELOG.md",
     "LICENSE.md",
