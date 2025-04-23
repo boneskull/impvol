@@ -24,6 +24,8 @@ export default tseslint.config(
         projectService: {
           allowDefaultProject: ['*.js', '.*.js'],
         },
+        // this is OK because we are only running lint under Node.js v22+
+        // eslint-disable-next-line n/no-unsupported-features/node-builtins
         tsconfigRootDir: import.meta.dirname,
       },
     },
