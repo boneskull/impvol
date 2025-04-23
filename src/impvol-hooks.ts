@@ -127,6 +127,8 @@ export const resolve: ResolveHook = (specifier, context, nextResolve) => {
   return nextResolve(specifier, context);
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore see https://github.com/DefinitelyTyped/DefinitelyTyped/pull/72581
 export const load: LoadHook = (specifier, context, nextLoad) => {
   const start = performance.now();
   if (shouldReload()) {
@@ -134,6 +136,9 @@ export const load: LoadHook = (specifier, context, nextLoad) => {
   }
   if (specifier.startsWith(`${PROTOCOL}://`)) {
     const {format} = context;
+    if (!format) {
+      return nextLoad(specifier, context);
+    }
     if (DISALLOWED_FORMATS.has(format)) {
       debug(
         'Warning: %s with unsupported format %s tried to load via VFS',
