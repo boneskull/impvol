@@ -86,7 +86,7 @@
     "eslint-plugin-perfectionist": "4.12.3",
     "husky": "9.1.7",
     "knip": "5.53.0",
-    "lint-staged": "15.5.1",
+    "lint-staged": "15.5.2",
     "markdownlint-cli2": "0.17.2",
     "markdownlint-cli2-formatter-pretty": "0.0.7",
     "memfs": "4.17.1",
