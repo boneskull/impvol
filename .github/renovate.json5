@@ -46,12 +46,12 @@
     '**/demo/**',
     '**/example*/**',
   ],
-  // packageRules: [
-  //   {
-  //     matchFileNames: ['.nvmrc'],
-  //     automerge: true,
-  //   },
-  // ],
+  packageRules: [
+    {
+      matchFileNames: ['.nvmrc'],
+      automerge: true,
+    },
+  ],
   // https://docs.renovatebot.com/configuration-options/#lockfilemaintenance
   lockFileMaintenance: {
     enabled: true,
