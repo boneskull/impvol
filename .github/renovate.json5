@@ -7,7 +7,7 @@
   ],
   packageRules: [
     {
-      matchFilenames: ['.nvmrc'],
+      matchFileNames: ['.nvmrc'],
       automerge: true,
     },
   ],
