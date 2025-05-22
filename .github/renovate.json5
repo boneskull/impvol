@@ -16,4 +16,5 @@
     enabled: true,
     automerge: true,
   },
+  inheritConfig: true,
 }
