@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.14](https://github.com/boneskull/impvol/compare/impvol-v0.1.13...impvol-v0.1.14) (2025-05-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency debug to v4.4.1 ([#423](https://github.com/boneskull/impvol/issues/423)) ([1203c7f](https://github.com/boneskull/impvol/commit/1203c7f0632795b623cb2015bfcc1be47fd0e0db))
+
 ## [0.1.13](https://github.com/boneskull/impvol/compare/impvol-v0.1.12...impvol-v0.1.13) (2025-01-06)
 
 
