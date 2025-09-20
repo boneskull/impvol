@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/boneskull/impvol/compare/impvol-v0.1.14...impvol-v0.2.0) (2025-09-20)
+
+
+### Features
+
+* add comprehensive Copilot instructions for repository onboarding ([#537](https://github.com/boneskull/impvol/issues/537)) ([839daf9](https://github.com/boneskull/impvol/commit/839daf9f8e3c95ab4464a572b8fc2eacf8b88b3d))
+
 ## [0.1.14](https://github.com/boneskull/impvol/compare/impvol-v0.1.13...impvol-v0.1.14) (2025-05-22)
 
 
