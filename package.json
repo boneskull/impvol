@@ -96,7 +96,7 @@
     "prettier-plugin-organize-imports": "4.3.0",
     "prettier-plugin-pkg": "0.21.2",
     "prettier-plugin-sh": "0.18.0",
-    "tshy": "3.0.2",
+    "tshy": "3.0.3",
     "tsx": "4.20.6",
     "typescript": "5.9.3",
     "typescript-eslint": "8.45.0"
