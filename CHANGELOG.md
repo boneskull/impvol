@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.0](https://github.com/boneskull/impvol/compare/impvol-v0.1.14...impvol-v0.2.0) (2025-10-17)
+
+
+### Features
+
+* add comprehensive Copilot instructions for repository onboarding ([#537](https://github.com/boneskull/impvol/issues/537)) ([839daf9](https://github.com/boneskull/impvol/commit/839daf9f8e3c95ab4464a572b8fc2eacf8b88b3d))
+* **deps:** fixes for memfs@v4.49.0 ([b032a4e](https://github.com/boneskull/impvol/commit/b032a4e6179bd572b701d546769fd02d60ee72e3))
+
 ## [0.1.14](https://github.com/boneskull/impvol/compare/impvol-v0.1.13...impvol-v0.1.14) (2025-05-22)
 
 
