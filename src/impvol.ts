@@ -7,12 +7,11 @@
  * @packageDocumentation
  */
 import Debug from 'debug';
-import {type File, type Link, type Node} from 'memfs/lib/node.js';
+import {type DirectoryJSON, Volume} from 'memfs';
 import {
   fromBinarySnapshotSync,
   toBinarySnapshotSync,
 } from 'memfs/lib/snapshot/binary.js';
-import {type DirectoryJSON, Volume} from 'memfs/lib/volume.js';
 import {mkdtempSync, writeFileSync} from 'node:fs';
 import {register} from 'node:module';
 import path from 'node:path';
@@ -38,8 +37,8 @@ const metadata = new WeakMap<
 >();
 
 export class ImportableVolume extends Volume {
-  constructor(props?: {File?: File; Link?: Link; Node?: Node}) {
-    super(props);
+  constructor() {
+    super();
     const sab = new SharedArrayBuffer(1);
     const uint8 = new Uint8Array(sab);
     Atomics.store(uint8, 0, 0);

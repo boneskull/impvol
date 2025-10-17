@@ -5,8 +5,8 @@
  * @packageDocumentation
  */
 import Debug from 'debug';
+import {Volume} from 'memfs';
 import {fromBinarySnapshotSync} from 'memfs/lib/snapshot/binary.js';
-import {Volume} from 'memfs/lib/volume.js';
 import {readFileSync} from 'node:fs';
 import {
   type InitializeHook,
