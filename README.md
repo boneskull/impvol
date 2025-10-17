@@ -43,7 +43,7 @@ Once an `ImportableVolume` has been created, any specifier in the virtual filesy
 ## Requirements
 
 - Node.js v20.0.0+
-- `memfs` v4.0.0+
+- `memfs` v4.49.0+
 
 ## Installation
 
