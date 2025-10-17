@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.0](https://github.com/boneskull/impvol/compare/impvol-v0.2.0...impvol-v1.0.0) (2025-10-17)
+
+
+### ⚠ BREAKING CHANGES
+
+* **deps:** update peerDependency of memfs to v4.49.0
+
+### Bug Fixes
+
+* **deps:** update peerDependency of memfs to v4.49.0 ([3f95279](https://github.com/boneskull/impvol/commit/3f95279f05f8b70d1e1e6b1789548c4ba44ef18e))
+
 ## [0.2.0](https://github.com/boneskull/impvol/compare/impvol-v0.1.14...impvol-v0.2.0) (2025-10-17)
 
 
