@@ -20,6 +20,7 @@
     "packagejson",
     "tsdoc",
     "tseslint",
-    "tshy"
+    "tshy",
+    "bupkis"
   ]
 }

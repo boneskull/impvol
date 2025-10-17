@@ -1,6 +1,5 @@
-// eslint-disable-next-line n/no-missing-import
-import {Volume} from 'memfs/lib/volume.js';
-import assert from 'node:assert';
+import {expect} from 'bupkis';
+import {Volume} from 'memfs';
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import {describe, it} from 'node:test';
 
@@ -12,8 +11,7 @@ describe('impvol', () => {
   describe('impvol()', () => {
     it('should return a ImportableVolume instance', () => {
       const vol = impvol();
-      assert.ok(vol instanceof ImportableVolume);
-      assert.ok(vol instanceof Volume);
+      expect(vol, 'to be an', ImportableVolume, 'and', 'to be a', Volume);
     });
 
     it('should import a script', async () => {
@@ -30,7 +28,7 @@ describe('impvol', () => {
         default: string;
       };
 
-      assert.strictEqual(result.default, 'Hello, world!');
+      expect(result.default, 'to be', 'Hello, world!');
     });
 
     it('should import a module', async () => {
@@ -48,7 +46,7 @@ describe('impvol', () => {
         default: string;
       };
 
-      assert.strictEqual(result.default, 'Hello, world!');
+      expect(result.default, 'to be', 'Hello, world!');
     });
 
     it('should import a module using the custom protocol', async () => {
@@ -65,7 +63,7 @@ describe('impvol', () => {
         default: string;
       };
 
-      assert.strictEqual(result.default, 'Hello, world!');
+      expect(result.default, 'to be', 'Hello, world!');
     });
   });
 });
