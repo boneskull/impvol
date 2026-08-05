@@ -95,7 +95,7 @@
     "prettier-plugin-curly": "0.4.1",
     "prettier-plugin-jsdoc": "1.8.1",
     "prettier-plugin-organize-imports": "4.3.0",
-    "prettier-plugin-pkg": "0.21.2",
+    "prettier-plugin-pkg": "0.22.1",
     "prettier-plugin-sh": "0.18.0",
     "tshy": "3.1.0",
     "tsx": "4.21.0",
