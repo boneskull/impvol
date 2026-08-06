@@ -90,7 +90,7 @@
     "lint-staged": "16.4.0",
     "markdownlint-cli2": "0.20.0",
     "markdownlint-cli2-formatter-pretty": "0.0.10",
-    "memfs": "4.51.1",
+    "memfs": "4.66.1",
     "prettier": "3.9.6",
     "prettier-plugin-curly": "0.4.1",
     "prettier-plugin-jsdoc": "1.8.1",
