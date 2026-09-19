@@ -84,14 +84,14 @@
     "cspell": "9.8.0",
     "eslint": "9.39.5",
     "eslint-plugin-n": "17.24.0",
-    "eslint-plugin-perfectionist": "5.10.0",
+    "eslint-plugin-perfectionist": "5.11.1",
     "husky": "9.1.7",
     "knip": "5.88.1",
     "lint-staged": "16.4.0",
     "markdownlint-cli2": "0.20.0",
     "markdownlint-cli2-formatter-pretty": "0.0.10",
     "memfs": "4.66.1",
-    "prettier": "3.9.6",
+    "prettier": "3.9.7",
     "prettier-plugin-curly": "0.4.1",
     "prettier-plugin-jsdoc": "1.8.1",
     "prettier-plugin-organize-imports": "4.3.0",
@@ -100,7 +100,7 @@
     "tshy": "3.3.2",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.65.0"
+    "typescript-eslint": "8.70.0"
   },
   "publishConfig": {
     "access": "public",
